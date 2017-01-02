@@ -38,7 +38,7 @@ contexts:
     - match: '\b(?:(pub)\s+)?\b(mod)\s+({{identifier}})\b'
       captures:
         1: storage.modifier.rust
-        2: storage.type.module.rust
+        2: storage.type.module.rust keyword.other.rust
         3: entity.name.module.rust
       push:
         - meta_scope: meta.module.rust
@@ -46,49 +46,43 @@ contexts:
           set: after-operator
         - include: statements-block
 
-    - match: '\b({{identifier}})\s*(=)\s*(?=\|)'
-      captures:
-        1: entity.name.function.rust
-        2: keyword.operator.rust
-      push: closure
-
     - match: '\b(?:(pub)\s+)?\b(fn)\s+(?={{identifier}})'
       scope: meta.function.rust
       captures:
         1: storage.modifier.rust
-        2: storage.type.function.rust
+        2: storage.type.function.rust keyword.other.rust
       push: fn-definition
 
     - match: '\b(?:(pub)\s+)?(struct)\s+'
       scope: meta.struct.rust
       captures:
         1: storage.modifier.rust
-        2: storage.type.struct.rust
+        2: storage.type.struct.rust keyword.other.rust
       push: struct-identifier
 
     - match: '\b(?:(pub)\s+)?(type)\s+({{identifier}})\b'
       captures:
         1: storage.modifier.rust
-        2: storage.type.type.rust
+        2: storage.type.type.rust keyword.other.rust
         3: entity.name.type.rust
 
     - match: '\b(?:(pub)\s+)?(trait)\s+({{identifier}})\b'
       captures:
         1: storage.modifier.rust
-        2: storage.type.trait.rust
+        2: storage.type.trait.rust keyword.other.rust
         3: entity.name.trait.rust
       push:
         - meta_scope: meta.trait.rust
         - include: statements-block
 
     - match: '\bimpl\b'
-      scope: storage.type.impl.rust
+      scope: storage.type.impl.rust keyword.other.rust
       push: impl-definition
 
     - match: '\b(?:(pub)\s+)?(enum)\s+({{identifier}})\b'
       captures:
         1: storage.modifier.rust
-        2: storage.type.enum.rust
+        2: storage.type.enum.rust keyword.other.rust
         3: entity.name.enum.rust
       push:
         - meta_scope: meta.enum.rust
@@ -98,28 +92,28 @@ contexts:
       scope: storage.type.rust keyword.other.rust
 
     - match: \bfn\b
-      scope: storage.type.function.rust
+      scope: storage.type.function.rust keyword.other.rust
 
     - match: \bmod\b
-      scope: storage.type.module.rust
+      scope: storage.type.module.rust keyword.other.rust
 
     - match: \bstruct\b
-      scope: storage.type.struct.rust
+      scope: storage.type.struct.rust keyword.other.rust
 
     - match: \bimpl\b
-      scope: storage.type.impl.rust
+      scope: storage.type.impl.rust keyword.other.rust
 
     - match: \benum\b
-      scope: storage.type.enum.rust
+      scope: storage.type.enum.rust keyword.other.rust
 
     - match: \btype\b
-      scope: storage.type.type.rust
+      scope: storage.type.type.rust keyword.other.rust
 
     - match: \btrait\b
-      scope: storage.type.trait.rust
+      scope: storage.type.trait.rust keyword.other.rust
 
     - match: \b(mut|pub|unsafe|move|ref)\b
-      scope: storage.modifier.rust
+      scope: storage.modifier.rust keyword.other.rust
 
     - match: \b(crate|extern|use|where)\b
       scope: keyword.other.rust
@@ -293,7 +287,6 @@ contexts:
         - match: '(?=<)'
           push: generic-angles
         - include: type-any-identifier
-        - match: '{{identifier}}'
         # Escape for incomplete expression
         - match: '(?=\S)'
           pop: true
@@ -386,6 +379,8 @@ contexts:
           scope: punctuation.definition.group.end.rust
           pop: true
         - include: type-any-identifier
+    - match: '->'
+      scope: punctuation.separator.rust
     - match: '(?=>|[^\s\$=<_+''(),&:[:alnum:]])'
       pop: true
     - match: '<'
@@ -395,9 +390,11 @@ contexts:
           scope: punctuation.definition.generic.begin.rust
           pop: true
         - include: generic-angles-contents
+    - match: '\?'
+      scope: keyword.operator.rust
     - include: type-any-identifier
     - match: ':'
-      scope: punctuation.separator.rust
+      scope: punctuation.separator.colon.rust
     - match: '\+'
       scope: keyword.operator.rust
 
@@ -422,7 +419,7 @@ contexts:
     - match: '''{{identifier}}(?!\'')\b'
       scope: storage.modifier.lifetime.rust
     - match: '\b([[:upper:]]|_*[[:upper:]][[:alnum:]_]*[[:lower:]][[:alnum:]_]*)\b::'
-      scope: meta.path.rust storage.type.rust
+      scope: meta.path.rust
       captures:
         1: storage.type.rust
     - match: '{{identifier}}::'
@@ -702,7 +699,7 @@ contexts:
         - match: '(?=\))'
           pop: true
         - match: \bself\b
-          scope: variable.parameter.rust
+          scope: variable.parameter.rust variable.language.rust
         - match: '({{identifier}})\s*(:(?!:))'
           captures:
             1: variable.parameter.rust
@@ -964,7 +961,9 @@ contexts:
     - match: '\b(c_[[:lower:][:digit:]_]+|[[:lower:]_][[:lower:][:digit:]_]*_t)\b'
       scope: storage.type.rust
     - match: '\b_*[A-Z][a-zA-Z0-9_]*[a-z][a-zA-Z0-9_]*\b'
-      scope: storage.type.source.rust
+      scope: storage.type.rust
+    - match: '\b[[:lower:]_][[:lower:][:digit:]_]*(?=\()'
+      scope: support.function.rust
     - match: '(?={{identifier}}::)'
       push:
         - meta_scope: meta.path.rust
@@ -983,7 +982,7 @@ contexts:
     - match: \b(self)\b
       scope: variable.language.rust
     - match: \b(super)\b
-      scope: keyword.other.rust
+      scope: keyword.other.super.rust
 
   no-type-names:
       # This push state prevents highlighting basic types like
