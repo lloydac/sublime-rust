@@ -379,8 +379,6 @@ contexts:
           scope: punctuation.definition.group.end.rust
           pop: true
         - include: type-any-identifier
-    - match: '->'
-      scope: punctuation.separator.rust
     - match: '(?=>|[^\s\$=<_+''(),&:[:alnum:]])'
       pop: true
     - match: '<'
@@ -390,8 +388,6 @@ contexts:
           scope: punctuation.definition.generic.begin.rust
           pop: true
         - include: generic-angles-contents
-    - match: '\?'
-      scope: keyword.operator.rust
     - include: type-any-identifier
     - match: ':'
       scope: punctuation.separator.colon.rust
@@ -403,7 +399,7 @@ contexts:
       scope: keyword.operator.rust
     - match: \b(mut|ref)\b
       scope: storage.modifier.rust
-    - match: \b(fn)\b(\()
+    - match: \b(fn|Fn|FnMut|FnOnce)\b(\()
       captures:
         1: storage.type.function.rust
         2: meta.group.rust punctuation.definition.group.begin.rust
@@ -438,6 +434,10 @@ contexts:
     - include: type
     - match: '\b_\b'
       scope: keyword.operator.rust
+    - match: '\b\?'
+      scope: keyword.operator.rust
+    - match: '{{identifier}}'
+      scope: storage.type.rust
 
   struct-identifier:
     - match: '{{identifier}}(?=<)'
@@ -740,7 +740,15 @@ contexts:
     - include: basic-identifiers
     - match: ':'
       scope: punctuation.separator.rust
+      push:
+        - include: type-any-identifier
+        - match: ','
+          scope: punctuation.separator.rust
+          pop: true
+        - match: '(?=(;|\{))'
+          pop: true
     - match: ';'
+      scope: punctuation.separator.rust
       pop: true
 
   fn-body:
