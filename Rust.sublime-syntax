@@ -347,6 +347,7 @@ contexts:
 
   type:
     - match: '{{identifier}}(?=<)'
+      scope: storage.type.rust
       push: generic-angles
     - match: \b(Self|i8|i16|i32|i64|isize|u8|u16|u32|u64|usize|f32|f64|bool|char|str)\b
       scope: storage.type.rust
@@ -372,6 +373,9 @@ contexts:
         - include: strings
         - match: '(?=\S)'
           pop: true
+    - match: \bfor\b
+      scope: keyword.other.rust
+      push: generic-angles
     - match: '\['
       scope: punctuation.definition.group.begin.rust
       push:
@@ -379,15 +383,8 @@ contexts:
           scope: punctuation.definition.group.end.rust
           pop: true
         - include: type-any-identifier
-    - match: '(?=>|[^\s\$=<_+''(),&:[:alnum:]])'
+    - match: '(?=[^\s\$=_+''(),&:[:alnum:]])'
       pop: true
-    - match: '<'
-      scope: punctuation.definition.generic.begin.rust
-      push:
-        - match: '>'
-          scope: punctuation.definition.generic.begin.rust
-          pop: true
-        - include: generic-angles-contents
     - include: type-any-identifier
     - match: ':'
       scope: punctuation.separator.colon.rust
@@ -647,21 +644,7 @@ contexts:
       set: impl-body
     - match: \bwhere\b
       scope: keyword.other.rust
-    - match: \bfor\b
-      scope: keyword.other.rust
-      push:
-        - match: '(?=<)'
-          push: generic-angles
-        - include: basic-identifiers
-        - match: '&'
-          scope: keyword.operator.rust
-        - match: '''{{identifier}}(?!\'')\b'
-          scope: storage.modifier.lifetime.rust
-        - match: '(?=\S)'
-          pop: true
-    - include: basic-identifiers
-    - match: ':'
-      scope: punctuation.separator.rust
+      push: generic-angles-contents
 
   impl-body:
     - meta_scope: meta.impl.rust
@@ -725,28 +708,7 @@ contexts:
       set: fn-body
     - match: \bwhere\b
       scope: keyword.other.rust
-    - match: \bfor\b
-      scope: keyword.other.rust
-      push:
-        - match: '(?=<)'
-          push: generic-angles
-        - include: basic-identifiers
-        - match: '&'
-          scope: keyword.operator.rust
-        - match: '''{{identifier}}(?!\'')\b'
-          scope: storage.modifier.lifetime.rust
-        - match: '(?=\S)'
-          pop: true
-    - include: basic-identifiers
-    - match: ':'
-      scope: punctuation.separator.rust
-      push:
-        - include: type-any-identifier
-        - match: ','
-          scope: punctuation.separator.rust
-          pop: true
-        - match: '(?=(;|\{))'
-          pop: true
+      push: generic-angles-contents
     - match: ';'
       scope: punctuation.separator.rust
       pop: true
