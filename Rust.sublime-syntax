@@ -396,7 +396,7 @@ contexts:
       scope: keyword.operator.rust
     - match: \b(mut|ref)\b
       scope: storage.modifier.rust
-    - match: \b(fn|Fn|FnMut|FnOnce)\b(\()
+    - match: \b(fn|Fn|FnMut|FnOnce|FnBox)\b(\()
       captures:
         1: storage.type.function.rust
         2: meta.group.rust punctuation.definition.group.begin.rust
